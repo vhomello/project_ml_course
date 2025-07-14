@@ -1,5 +1,5 @@
 [project]
-name = "projeto-final-aprendizado-maquina"
+name = "project_ml_course"
 version = "0.1.0"
 description = "Projeto Final da materia aprendizado de maquina"
 readme = "README.md"
