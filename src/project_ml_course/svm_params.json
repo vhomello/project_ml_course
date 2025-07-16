@@ -1,0 +1,20 @@
+{
+    "training_input": "data/dados.csv",
+    "random_state": 42,
+    "test_size": 0.2,
+    "pre_processing": {
+        "with_std": false
+    },
+    "pca": {
+        "n_components": 3
+    },
+    "svm": {
+        "C": 10.251516094582083,
+        "kernel": "rbf",
+        "probability": true
+    },
+    "tuned_threshold": {
+        "cv": 5,
+        "metric": "f1"
+    }
+}

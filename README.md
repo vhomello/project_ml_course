@@ -18,6 +18,36 @@ Sua tarefa é desenvolver uma solução automatizada que atenda a esses objetivo
 
 A solução entregue deve conter código completo, organizado e documentado, facilitando sua integração ao fluxo operacional do cliente.
 
+## Resultado
+### 1. Exploratory Data Analysis
+
+Removi variaveis com baixa ou alta correlação com o target, resultado nesse tabela. Mais detalhes nesse [notebook](notebooks/01_eda.ipynb)
+
+|         |        class |
+|:--------|-------------:|
+| feat_31 |  1           |
+| feat_14 |  0.000856701 |
+| feat_24 |  0.000400526 |
+| feat_23 |  0.000391264 |
+| feat_27 | -0.000502959 |
+
+### 2. PCA
+Todas as features estavam com baixa correlação com o target, uma hioptese que se demostrou verdadeira é que com o PCA poderiamos diminuir a dimensão sem perder performance.
+
+Esse gráfico os autovalores resultantes do PCA
+![autovalores](img/autovalores.png)
+
+Como podemos ver nesse grafico a performance não foi impactada se mantemos três ou mais componentes principais
+
+![pca_impact](img/pca_impact.png)
+
+Como podemos ver nesse outro gráfico, depois do PCA o target é muito bem divisivel. Com isso em mente utilizamos o SVM para modelar
+
+![divisao](img/pca_division.png)
+
+### 3. SVM Tuning
+
+
 ## Setup (linux ou macos)
 Este projeto utiliza o UV para gerenciamento eficiente de dependências Python e instalação do projeto. O UV é um instalador e resolutor de pacotes Python rápido, moderno e projetado como alternativa ao pip e pip-tools.
 

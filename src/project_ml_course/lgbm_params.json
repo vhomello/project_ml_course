@@ -1,0 +1,19 @@
+{
+    "training_input": "data/dados.csv",
+    "random_state": 42,
+    "test_size": 0.2,
+    "lgbm": {
+        "learning_rate": 0.05588119464680504,
+        "num_leaves": 82,
+        "max_depth": 9,
+        "min_child_samples": 14,
+        "subsample": 0.8466398877355169,
+        "colsample_bytree": 0.9156682910427868,
+        "reg_alpha": 0.000239851442633549,
+        "reg_lambda": 0.0033246794209540052
+    },
+    "tuned_threshold": {
+        "cv": 5,
+        "metric": "f1"
+    }
+}
