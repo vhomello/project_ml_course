@@ -19,9 +19,9 @@ Sua tarefa é desenvolver uma solução automatizada que atenda a esses objetivo
 A solução entregue deve conter código completo, organizado e documentado, facilitando sua integração ao fluxo operacional do cliente.
 
 ## Resultado
-### 1. Exploratory Data Analysis
+### 1. Análise Exploratória dos Dados (EDA)
 
-Removi variaveis com baixa ou alta correlação com o target, resultado nesse tabela. Mais detalhes nesse [notebook](notebooks/01_eda.ipynb)
+Removi variáveis com correlação muito baixa ou muito alta com o target. O resultado pode ser visto na tabela abaixo. Mais detalhes estão disponíveis neste [notebook](notebooks/01_eda.ipynb):
 
 |         |        class |
 |:--------|-------------:|
@@ -32,21 +32,52 @@ Removi variaveis com baixa ou alta correlação com o target, resultado nesse ta
 | feat_27 | -0.000502959 |
 
 ### 2. PCA
-Todas as features estavam com baixa correlação com o target, uma hioptese que se demostrou verdadeira é que com o PCA poderiamos diminuir a dimensão sem perder performance.
+Como todas as variáveis apresentaram baixa correlação com o target, investigamos a hipótese de que a redução de dimensionalidade via PCA não comprometeria a performance — o que se confirmou.
 
-Esse gráfico os autovalores resultantes do PCA
+Abaixo, os autovalores resultantes do PCA:
 ![autovalores](img/autovalores.png)
 
-Como podemos ver nesse grafico a performance não foi impactada se mantemos três ou mais componentes principais
+O gráfico a seguir mostra que a performance do modelo se mantém estável com três ou mais componentes principais:
 
 ![pca_impact](img/pca_impact.png)
 
-Como podemos ver nesse outro gráfico, depois do PCA o target é muito bem divisivel. Com isso em mente utilizamos o SVM para modelar
+Além disso, observamos que, após o PCA, o target tornou-se bem separável no novo espaço vetorial, o que motivou o uso do SVM como modelo principal:
 
 ![divisao](img/pca_division.png)
 
 ### 3. SVM Tuning
+Utilizamos o Optuna para realizar o tuning dos hiperparâmetros do SVM. Os melhores parâmetros encontrados foram:
 
+```
+"C": 10.251516094582083,
+"kernel": "rbf",
+```
+
+### 4. Benchmark com LGBM
+Para comparação, treinamos um modelo benchmark utilizando o LightGBM. O tuning também foi feito com Optuna, e os melhores parâmetros foram:
+
+```
+"learning_rate": 0.05588119464680504,
+"num_leaves": 82,
+"max_depth": 9,
+"min_child_samples": 14,
+"subsample": 0.8466398877355169,
+"colsample_bytree": 0.9156682910427868,
+"reg_alpha": 0.000239851442633549,
+"reg_lambda": 0.0033246794209540052
+```
+
+### 5. Tuning threshold
+Como se trata de um problema de crédito com classes desbalanceadas, utilizamos o F1-score como métrica principal. Para isso, foi necessário ajustar o threshold de decisão. A otimização foi feita com o `TunedThresholdClassifierCV`.
+
+### 6. Treino final
+O treinamento final do modelo foi realizado com o pipeline salvo no diretório `src/`, e o binário do modelo foi armazenado como `.pkl` no diretório `models/`.
+
+### 7. Desempenho final
+| Model    |   F1 Train |   F1 Test |
+|:---------|-----------:|----------:|
+| LightGBM |     1.0000 |    0.9475 |
+| SVM      |     0.9863 |    0.9691 |
 
 ## Setup (linux ou macos)
 Este projeto utiliza o UV para gerenciamento eficiente de dependências Python e instalação do projeto. O UV é um instalador e resolutor de pacotes Python rápido, moderno e projetado como alternativa ao pip e pip-tools.
