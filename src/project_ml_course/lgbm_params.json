@@ -2,15 +2,20 @@
     "training_input": "data/dados.csv",
     "random_state": 42,
     "test_size": 0.2,
+    "features": [
+        "feat_8",
+        "feat_17",
+        "feat_50"
+    ],
     "lgbm": {
-        "learning_rate": 0.05588119464680504,
-        "num_leaves": 82,
+        "learning_rate": 0.2026423734492729,
+        "num_leaves": 83,
         "max_depth": 9,
-        "min_child_samples": 14,
-        "subsample": 0.8466398877355169,
-        "colsample_bytree": 0.9156682910427868,
-        "reg_alpha": 0.000239851442633549,
-        "reg_lambda": 0.0033246794209540052
+        "min_child_samples": 21,
+        "subsample": 0.9419098599507807,
+        "colsample_bytree": 0.9985816372861133,
+        "reg_alpha": 2.8281359110848526e-05,
+        "reg_lambda": 2.243813364676738e-06
     },
     "tuned_threshold": {
         "cv": 5,

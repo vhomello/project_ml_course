@@ -11,8 +11,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 
-from project_ml_course.data_process import filter_columns_by_correlation_threshold
-
 
 def load_params(params_path: str) -> dict:
     """Load parameters from JSON file."""
@@ -26,18 +24,9 @@ def load_and_preprocess_data(params: dict) -> tuple:
     # Load raw data
     raw_df = pd.read_csv(params["training_input"], index_col="Unnamed: 0")
 
-    # Apply correlation filtering
-    df = filter_columns_by_correlation_threshold(
-        df=raw_df,
-        ref_col="class",
-        method_type="pearson",
-        lower_threshold=0.001,
-        higher_threshold=0.999,
-    )
-
     # Separate features and target
-    X = df.drop(columns=["class"])
-    y = df["class"]
+    X = raw_df[params["features"]]
+    y = raw_df["class"]
 
     return X, y
 
@@ -45,8 +34,6 @@ def load_and_preprocess_data(params: dict) -> tuple:
 def create_svm_pipeline(params: dict) -> Pipeline:
     """Create SVM pipeline with preprocessing steps."""
     # Get parameters
-    with_std = params["pre_processing"]["with_std"]
-    n_components = params["pca"]["n_components"]
     svm_params = params["svm"]
     tuned_threshold_params = params["tuned_threshold"]
     random_state = params["random_state"]
@@ -63,8 +50,6 @@ def create_svm_pipeline(params: dict) -> Pipeline:
     # Create pipeline
     pipeline = Pipeline(
         [
-            ("scaler", StandardScaler(with_std=with_std)),
-            ("pca", PCA(n_components=n_components, random_state=random_state)),
             ("svm", svm),
         ]
     )

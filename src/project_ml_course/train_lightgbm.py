@@ -9,8 +9,6 @@ from sklearn.metrics import f1_score
 from sklearn.model_selection import TunedThresholdClassifierCV, train_test_split
 from sklearn.pipeline import Pipeline
 
-from project_ml_course.data_process import filter_columns_by_correlation_threshold
-
 
 def load_params(params_path: str) -> dict:
     """Load parameters from JSON file."""
@@ -24,18 +22,9 @@ def load_and_preprocess_data(params: dict) -> tuple:
     # Load raw data
     raw_df = pd.read_csv(params["training_input"], index_col="Unnamed: 0")
 
-    # Apply correlation filtering
-    df = filter_columns_by_correlation_threshold(
-        df=raw_df,
-        ref_col="class",
-        method_type="pearson",
-        lower_threshold=0.001,
-        higher_threshold=0.999,
-    )
-
     # Separate features and target
-    X = df.drop(columns=["class"])
-    y = df["class"]
+    X = raw_df[params["features"]]
+    y = raw_df["class"]
 
     return X, y
 

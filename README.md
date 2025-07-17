@@ -31,8 +31,22 @@ Removi variáveis com correlação muito baixa ou muito alta com o target. O res
 | feat_23 |  0.000391264 |
 | feat_27 | -0.000502959 |
 
-### 2. PCA
-Como todas as variáveis apresentaram baixa correlação com o target, investigamos a hipótese de que a redução de dimensionalidade via PCA não comprometeria a performance — o que se confirmou.
+### 2. Benchmark
+Como modelo de referência, foi construido um pipeline com um classificador LightGBM (parâmetros padrão) e ajuste de limiar de decisão (Tuned Threshold) para otimizar o F1-score. O modelo atingiu uma performance de 0,9717.
+
+A interpretação por SHAP indicou que apenas três variáveis — feat_8, feat_17 e feat_50 — concentram praticamente toda a importância do modelo.
+
+Em seguida, plotamos todas as features no espaço tridimensional (ℝ³). O gráfico revelou que as classes são facilmente separáveis, o que motivou a experimentação de um SVM (Support Vector Machine).
+
+![3d](img/3d.png)
+
+### 3. Feature Selection
+Para validar a relevância das variáveis, aplicamos uma técnica de seleção sequencial de features (Sequential Feature Selector), utilizando validação cruzada com 5 folds (KFold, cv=5). O processo confirmou a mesma conclusão obtida pela análise com SHAP: as variáveis feat_8, feat_17 e feat_50 são as únicas com contribuição significativa para a performance do modelo.
+
+![feature_selection](img/feature_selection.png)
+
+#### PCA
+Como todas as variáveis apresentaram baixa correlação com o target também testei fazer PCA. investigamos a hipótese de que a redução de dimensionalidade via PCA não comprometeria a performance — o que se confirmou.
 
 Abaixo, os autovalores resultantes do PCA:
 ![autovalores](img/autovalores.png)
@@ -41,15 +55,17 @@ O gráfico a seguir mostra que a performance do modelo se mantém estável com t
 
 ![pca_impact](img/pca_impact.png)
 
-Além disso, observamos que, após o PCA, o target tornou-se bem separável no novo espaço vetorial, o que motivou o uso do SVM como modelo principal:
+Além disso, observamos que, após o PCA, o target tornou-se bem separável no novo espaço vetorial, o que encaixa na hipotese do uso do SVM como modelo principal:
 
 ![divisao](img/pca_division.png)
 
-### 3. SVM Tuning
+Não seguimos com o PCA para manter um certo nível de interpretabilidade, prerequisito do projeto
+
+### 4. HP tuning
 Utilizamos o Optuna para realizar o tuning dos hiperparâmetros do SVM. Os melhores parâmetros encontrados foram:
 
 ```
-"C": 10.251516094582083,
+"C": 9.754981741396318
 "kernel": "rbf",
 ```
 
@@ -57,14 +73,14 @@ Utilizamos o Optuna para realizar o tuning dos hiperparâmetros do SVM. Os melho
 Para comparação, treinamos um modelo benchmark utilizando o LightGBM. O tuning também foi feito com Optuna, e os melhores parâmetros foram:
 
 ```
-"learning_rate": 0.05588119464680504,
-"num_leaves": 82,
+"learning_rate": 0.2026423734492729,
+"num_leaves": 83,
 "max_depth": 9,
-"min_child_samples": 14,
-"subsample": 0.8466398877355169,
-"colsample_bytree": 0.9156682910427868,
-"reg_alpha": 0.000239851442633549,
-"reg_lambda": 0.0033246794209540052
+"min_child_samples": 21,
+"subsample": 0.9419098599507807,
+"colsample_bytree": 0.9985816372861133,
+"reg_alpha": 2.8281359110848526e-05,
+"reg_lambda": 2.243813364676738e-06
 ```
 
 ### 5. Tuning threshold
@@ -76,8 +92,11 @@ O treinamento final do modelo foi realizado com o pipeline salvo no diretório `
 ### 7. Desempenho final
 | Model    |   F1 Train |   F1 Test |
 |:---------|-----------:|----------:|
-| LightGBM |     1.0000 |    0.9475 |
-| SVM      |     0.9863 |    0.9691 |
+| LightGBM |     1.0000 |    0.9621 |
+| SVM      |     0.9893 |    0.9810 |
+
+Aqui tem o shap de importancia das features
+![shap](img/shap.png)
 
 ## Setup (linux ou macos)
 Este projeto utiliza o UV para gerenciamento eficiente de dependências Python e instalação do projeto. O UV é um instalador e resolutor de pacotes Python rápido, moderno e projetado como alternativa ao pip e pip-tools.

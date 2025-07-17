@@ -2,14 +2,13 @@
     "training_input": "data/dados.csv",
     "random_state": 42,
     "test_size": 0.2,
-    "pre_processing": {
-        "with_std": false
-    },
-    "pca": {
-        "n_components": 3
-    },
+    "features": [
+        "feat_8",
+        "feat_17",
+        "feat_50"
+    ],
     "svm": {
-        "C": 10.251516094582083,
+        "C": 9.754981741396318,
         "kernel": "rbf",
         "probability": true
     },
